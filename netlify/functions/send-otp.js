@@ -149,7 +149,7 @@ exports.handler = async (event) => {
   }
 
   const response = { ok: true, expiresAt };
-  const returnOtp = (process.env.RETURN_OTP || 'true') === 'true';
+  const returnOtp = (process.env.RETURN_OTP || 'false') === 'true';
   if (returnOtp) {
     response.otp = otp;
   }

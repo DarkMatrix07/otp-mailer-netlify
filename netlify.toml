@@ -6,4 +6,4 @@
   node_bundler = "esbuild"
 
 [build.environment]
-  RETURN_OTP = "true"
+  RETURN_OTP = "false"
