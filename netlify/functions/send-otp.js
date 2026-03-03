@@ -8,6 +8,13 @@ const corsHeaders = {
 };
 
 const buildOtp = () => Math.floor(100000 + Math.random() * 900000).toString();
+const escapeHtml = (value) =>
+  String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 
 exports.handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') {
@@ -77,14 +84,52 @@ exports.handler = async (event) => {
   });
 
   const safeName = name || 'there';
+  const safeNameHtml = escapeHtml(safeName);
+  const otpHtml = escapeHtml(otp);
+  const ttlMinutes = Math.max(1, Math.round(ttlSeconds / 60));
   const subject = 'Dish2Door registration OTP';
-  const text = `Hi ${safeName},\n\nYour Dish2Door OTP is ${otp}. It expires in ${Math.round(
-    ttlSeconds / 60,
-  )} minutes.\n\nIf you did not request this, you can ignore this email.`;
+  const text = `Hi ${safeName},\n\nUse this Dish2Door OTP to continue: ${otp}\nThis code expires in ${ttlMinutes} minutes.\n\nIf you did not request this, you can ignore this email.\n\n- Dish2Door OTP Service`;
   const html = `
-    <p>Hi ${safeName},</p>
-    <p>Your Dish2Door OTP is <strong>${otp}</strong>.</p>
-    <p>It expires in ${Math.round(ttlSeconds / 60)} minutes.</p>
+<!DOCTYPE html>
+<html lang="en">
+  <body style="margin:0;padding:0;background-color:#f4f7fb;font-family:'Segoe UI',Arial,sans-serif;">
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color:#f4f7fb;padding:24px 12px;">
+      <tr>
+        <td align="center">
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:560px;background:#ffffff;border-radius:16px;border:1px solid #e7ebf3;overflow:hidden;">
+            <tr>
+              <td style="background:linear-gradient(120deg,#ff7a18,#ff3c5f);padding:28px 32px;color:#ffffff;">
+                <p style="margin:0 0 8px 0;font-size:12px;letter-spacing:1.2px;font-weight:700;text-transform:uppercase;opacity:.92;">Dish2Door</p>
+                <h1 style="margin:0 0 10px 0;font-size:26px;line-height:1.25;font-weight:700;">Your one-time passcode</h1>
+                <p style="margin:0;font-size:14px;line-height:1.6;opacity:.95;">Use this code to complete your sign in securely.</p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:30px 32px 18px 32px;color:#0f172a;">
+                <p style="margin:0 0 16px 0;font-size:18px;font-weight:600;">Hi ${safeNameHtml},</p>
+                <p style="margin:0 0 18px 0;font-size:15px;line-height:1.7;color:#334155;">Here is your Dish2Door OTP. It will expire in <strong>${ttlMinutes} minutes</strong>.</p>
+                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:0 0 18px 0;">
+                  <tr>
+                    <td align="center" style="padding:18px;border-radius:12px;background:#fff7ed;border:1px dashed #fb923c;">
+                      <span style="display:inline-block;font-size:36px;line-height:1;letter-spacing:8px;font-weight:700;color:#9a3412;">${otpHtml}</span>
+                    </td>
+                  </tr>
+                </table>
+                <p style="margin:0 0 8px 0;font-size:13px;line-height:1.7;color:#64748b;">For your security, never share this code with anyone.</p>
+                <p style="margin:0;font-size:13px;line-height:1.7;color:#64748b;">If you did not request this email, you can safely ignore it.</p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:14px 32px;background:#f8fafc;border-top:1px solid #e7ebf3;color:#64748b;font-size:12px;line-height:1.6;">
+                Dish2Door OTP Service
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
   `;
 
   try {
