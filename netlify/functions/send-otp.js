@@ -87,7 +87,7 @@ exports.handler = async (event) => {
   const safeNameHtml = escapeHtml(safeName);
   const otpHtml = escapeHtml(otp);
   const ttlMinutes = Math.max(1, Math.round(ttlSeconds / 60));
-  const subject = 'Dish2Door registration OTP';
+  const subject = 'Dish2Door verification code';
   const text = `Hi ${safeName},\n\nUse this Dish2Door OTP to continue: ${otp}\nThis code expires in ${ttlMinutes} minutes.\n\nIf you did not request this, you can ignore this email.\n\n- Dish2Door OTP Service`;
   const html = `
 <!DOCTYPE html>
@@ -160,3 +160,4 @@ exports.handler = async (event) => {
     body: JSON.stringify(response),
   };
 };
+
