@@ -53,7 +53,7 @@ exports.handler = async (event) => {
     typeof process.env.SMTP_SECURE === 'string'
       ? process.env.SMTP_SECURE === 'true'
       : smtpPort === 465;
-  const from = process.env.SMTP_FROM || `FoodExpress <${smtpUser || 'no-reply@foodexpress.local'}>`;
+  const from = process.env.SMTP_FROM || `Dish2Door <${smtpUser || 'no-reply@dish2door.local'}>`;
 
   if (!smtpHost || !smtpUser || !smtpPass) {
     return {
@@ -77,13 +77,13 @@ exports.handler = async (event) => {
   });
 
   const safeName = name || 'there';
-  const subject = 'FoodExpress registration OTP';
-  const text = `Hi ${safeName},\n\nYour FoodExpress OTP is ${otp}. It expires in ${Math.round(
+  const subject = 'Dish2Door registration OTP';
+  const text = `Hi ${safeName},\n\nYour Dish2Door OTP is ${otp}. It expires in ${Math.round(
     ttlSeconds / 60,
   )} minutes.\n\nIf you did not request this, you can ignore this email.`;
   const html = `
     <p>Hi ${safeName},</p>
-    <p>Your FoodExpress OTP is <strong>${otp}</strong>.</p>
+    <p>Your Dish2Door OTP is <strong>${otp}</strong>.</p>
     <p>It expires in ${Math.round(ttlSeconds / 60)} minutes.</p>
   `;
 

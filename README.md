@@ -1,4 +1,4 @@
-# FoodExpress OTP mailer (Netlify)
+# Dish2Door OTP mailer (Netlify)
 
 This folder is a standalone Netlify Functions service that:
 1) Sends a 6-digit OTP email
